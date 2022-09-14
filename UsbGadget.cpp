@@ -25,6 +25,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+
 constexpr int MAX_FILE_PATH_LENGTH = 256;
 constexpr int DISCONNECT_WAIT_US = 100000;
 constexpr int PULL_UP_DELAY = 500000;
@@ -342,7 +345,7 @@ Return<void> UsbGadget::setCurrentUsbFunctions(
 
 	ReadFileToString(STRING_PATH, &s);
 
-	ALOGD("[%s] string %s(%d) function:%llu/%llu",
+	ALOGD("[%s] string %s(%zu) function:%" PRIu64 "/%" PRIu64 ,
 		__func__, s.c_str(), s.length(), functions, GadgetFunction::ADB);
 
 	if (strcmp(s.c_str(),"adb\n") < 0)
@@ -355,7 +358,7 @@ Return<void> UsbGadget::setCurrentUsbFunctions(
 		return Void();
 	}
 
-	ALOGD("[%s] function:%llu", __func__, functions);
+	ALOGD("[%s] function: %" PRIu64, __func__, functions);
 	// Unlink the gadget and stop the monitor if running.
 	V1_0::Status status = tearDownGadget();
 		if (status != Status::SUCCESS) {
